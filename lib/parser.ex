@@ -1,14 +1,8 @@
 
 defmodule Parser do
 
-	def parse(fileName) do
-		case File.open fileName, [:utf8] do
-			{:ok, file} ->
-				res = parseLine file, []
-				File.close file
-				res
-			{:error, _} -> []
-		end
+	def parse(file) do
+		parseLine file, []
 	end
 
 	defp parseLine(file, data) do
