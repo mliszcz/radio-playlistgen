@@ -1,7 +1,9 @@
 
 defmodule Checker do
 
-	def check(url) when is_list(url) do
+	def check(url, timeout \\ 200)
+
+	def check(url, timeout) when is_list(url) and is_integer(timeout) do
 
 		:inets.start()
 
@@ -9,16 +11,20 @@ defmodule Checker do
 			# async requests do not fail
 			{:ok, reqRef} = :httpc.request(:get, {url, []}, [], [{:sync, :false}, {:stream, {:self, :once}}])
 			receive do
-				{:http, {^reqRef, :stream_start, _, _}} -> true
+				{:http, {^reqRef, :stream_start, _, _}} ->
+					:httpc.cancel_request reqRef
+					true
 			after
-				200 -> false
+				timeout ->
+					:httpc.cancel_request reqRef
+					false
 			end
 		end
 
-		Task.await task
+		Task.await task, 2*timeout
 	end
 
-	def check(url) when is_binary(url) do
-		check to_char_list url
+	def check(url, timeout) when is_binary(url) do
+		check to_char_list(url), timeout
 	end
 end
