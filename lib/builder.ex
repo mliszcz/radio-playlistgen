@@ -15,10 +15,10 @@ defmodule Builder do
 		"""
 	end
 
-	defp format({%{title: t, file: f} = entry, id}) do
+	defp format({%{title: t, file: f}, id}) do
 		~s"""
-		File#{id}=#{entry.file}
-		Title#{id}=#{entry.title}
+		File#{id}=#{f}
+		Title#{id}=#{t}
 		Length#{id}=-1
 		"""
 	end
