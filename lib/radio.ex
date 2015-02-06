@@ -12,7 +12,7 @@ defmodule Radio do
 			"Radio WAWA" 				=> {:pls, "http://acdn.smcloud.net/t050-1.mp3.pls"},
 			"KRK.FM" 					=> {:m3u, "http://stream4.nadaje.com:11770/test.m3u"},
 			"Radiofonia" 				=> {:pls, "http://www.rmfon.pl/n/radiofonia.pls"},
-			"Radio Złote Przeboje" 		=> {:pls, "http://www.radio.pionier.net.pl/stream.pls?radio=radio88"} # FIXME
+			"Radio Złote Przeboje" 		=> {:pls, "http://www.tuba.fm/stream.pls?radio=9&mp3=1"}
 		}
 	end
 
@@ -26,6 +26,7 @@ defmodule Radio do
 								{:ok, file} -> {:ok, file, fn -> StringIO.close file end}
 								{:error, r} -> {:error, r}
 							end
+						%{status_code: 301, headers: h} -> open_file h[:Location]
 						%{status_code: code} -> {:error, code}
 					end
 				rescue
@@ -56,7 +57,6 @@ defmodule Radio do
 						:pls -> Parser.PLS.parse file
 						:m3u -> Parser.M3U.parse file
 					end
-					IO.puts "parsed #{t}: #{inspect res}"
 					close.()
 					{t, res}
 				end)
