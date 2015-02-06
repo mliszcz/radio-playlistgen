@@ -1,5 +1,5 @@
 
-defmodule Parser do
+defmodule Parser.PLS do
 
 	def parse(file) do
 		parseLine file, []
@@ -10,7 +10,7 @@ defmodule Parser do
 			:eof -> data
 			line -> case Regex.run ~r/File\d+=(.*)[\r?\n]?/, line do
 				[^line, url] -> parseLine file, [url | data]
-				_ -> parseLine file, data
+				_ 			 -> parseLine file, data
 			end
 		end
 	end
