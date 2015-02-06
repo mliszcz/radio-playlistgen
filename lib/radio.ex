@@ -68,7 +68,7 @@ defmodule Radio do
 				case f do
 					{:ok, _} -> true
 					{:error, r} ->
-						IO.puts "#{t}: #{r}"
+						Logger.log(:error, "#{t}: #{r}")
 						false
 				end
 			end)
