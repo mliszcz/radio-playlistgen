@@ -14,6 +14,7 @@ defmodule Checker do
 
 				{:http, {^reqRef, :stream_start, _, _}} ->
 					# IceCast stream
+					# TODO check if headers contain {'content-type', 'audio/mpeg'} and icy-* headers
 					:httpc.cancel_request reqRef
 					true
 
