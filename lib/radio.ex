@@ -42,63 +42,51 @@ defmodule Radio do
 		end
 	end
 
-	def gen(timeout \\ 1000) do
+	defp grab_stream({tpe, path}, timeout) do
+
+		case open_file path do
+
+			{:ok, file, close} ->
+
+				urls = case tpe do
+					:pls -> Parser.PLS.parse file
+					:m3u -> Parser.M3U.parse file
+				end
+				close.(file)
+
+				case urls |> Enum.find &(Checker.check(&1, timeout)) do
+					nil -> {:error, :no_stream}
+					str -> {:ok, str}
+				end
+
+			{:error, e} -> {:error, e}
+		end
+	end
+
+	@long 999999999
+	def gen(timeout \\ 2000) do
 
 		# these crappy streams are slow as fuck
 		# only rmfon services respond in <200ms
 
 		playlists
-			|> Enum.map(fn {title, {_tpe, path}} ->
-					{title, {_tpe, async_open(path, timeout) }}
+
+			|> Enum.map(fn {title, location} ->
+				{title, Task.async fn -> grab_stream(location, timeout) end }
 			end)
-			|> Enum.map(fn {title, {_tpe, task}} ->
-					{title, {_tpe, await_open(task, timeout) }}
+			|> Enum.map(fn {title, task} ->
+				{title, Task.await(task, @long) }
 			end)
-			|> Enum.filter(fn {t, {_tpe, f}} ->
-					case f do
-						{:error, r} ->
-							(IO.puts "#{t}: #{inspect r}")
-							false
-						{:ok, _, _} -> true
-					end
-				end)
-			|> Enum.map(fn {t, {tpe,{:ok, file, close}}} ->
-					res = case tpe do
-						:pls -> Parser.PLS.parse file
-						:m3u -> Parser.M3U.parse file
-					end
-					close.(file)
-					{t, res}
-				end)
-			|> Enum.map(fn {t,f} -> {t, async_check(f, timeout) } end)
-			|> Enum.map(fn {t,f} -> 
-				{t, await_check(f, timeout) } end)
 			|> Enum.filter(fn {t, f} ->
-					if f == nil, do: (IO.puts "#{t}: no stream!")
-					f != nil
-				end)
-			|> Enum.map(fn {t,f} -> %{title: t, file: f} end)
+				case f do
+					{:ok, _} -> true
+					{:error, r} ->
+						IO.puts "#{t}: #{r}"
+						false
+				end
+			end)
+			|> Enum.map(fn {t,{:ok,f}} -> %{title: t, file: f} end)
 			|> Builder.build
 			|> IO.puts
-	end
-
-
-	defp async_open(path, timeout) do
-		Task.async fn -> open_file path end
-	end
-
-	defp await_open(task, timeout) do
-		Task.await(task, 2000*timeout)
-	end
-
-
-	defp async_check(urls, timeout) do
-		Task.async fn ->
-			urls |> Enum.find &(Checker.check(&1, timeout))
-		end
-	end
-
-	defp await_check(task, timeout) do
-		Task.await(task, 2000*timeout)
 	end
 end

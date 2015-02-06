@@ -1,7 +1,9 @@
 
 defmodule Checker do
 
-	def check(url, timeout \\ 200)
+	@long 999999999
+
+	def check(url, timeout \\ 2000)
 
 	def check(url, timeout) when is_list(url) and is_integer(timeout) do
 
@@ -28,7 +30,7 @@ defmodule Checker do
 			end
 		end
 
-		Task.await task, 2000*timeout
+		Task.await task, @long
 	end
 
 	def check(url, timeout) when is_binary(url) do

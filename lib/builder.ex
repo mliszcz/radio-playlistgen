@@ -9,9 +9,9 @@ defmodule Builder do
 			|> map(&format/1)
 		~s"""
 		[playlist]
-		#{ent}
 		NumberOfEntries=#{length ent}
 		Version=2
+		#{ent}
 		"""
 	end
 
