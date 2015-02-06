@@ -5,15 +5,22 @@ defmodule Checker do
 
 	def check(url, timeout) when is_list(url) and is_integer(timeout) do
 
-		:inets.start()
-
 		task = Task.async fn ->
+
 			# async requests do not fail
 			{:ok, reqRef} = :httpc.request(:get, {url, []}, [], [{:sync, :false}, {:stream, {:self, :once}}])
+
 			receive do
+
 				{:http, {^reqRef, :stream_start, _, _}} ->
+					# IceCast stream
 					:httpc.cancel_request reqRef
 					true
+
+				{:http, {^reqRef, {:error, {:could_not_parse_as_http, body}}}} ->
+					# SHOUTcast stream
+					:httpc.cancel_request reqRef
+					String.starts_with? body, "ICY 200 OK"
 			after
 				timeout ->
 					:httpc.cancel_request reqRef
@@ -21,7 +28,7 @@ defmodule Checker do
 			end
 		end
 
-		Task.await task, 2*timeout
+		Task.await task, 2000*timeout
 	end
 
 	def check(url, timeout) when is_binary(url) do
