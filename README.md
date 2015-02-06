@@ -2,6 +2,9 @@ radio-playlistgen
 =====
 
 # Overview
+
+[![Build Status](https://img.shields.io/travis/mliszcz/radio-playlistgen/master.svg)](https://travis-ci.org/mliszcz/radio-playlistgen)
+
 This application parses *pls*/*m3u* playlists with radio stations live streams,
 filters unreachable and combines available streams into one *pls* playlist
 with proper metadata.

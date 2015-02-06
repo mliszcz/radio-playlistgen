@@ -5,7 +5,8 @@ defmodule Radio.Mixfile do
 		app: :radio,
 		version: "0.0.1",
 		elixir: "~> 1.0",
-		deps: deps]
+		deps: deps,
+		test_coverage: [tool: ExCoveralls]]
 	end
 
 	def application do [
@@ -14,6 +15,6 @@ defmodule Radio.Mixfile do
 	end
 
 	defp deps do
-		[]
+		[{:excoveralls, "~> 0.3", only: :dev}]
 	end
 end
