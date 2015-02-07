@@ -27,7 +27,7 @@ defmodule Radio do
 		end
 	end
 
-	@typep playlist_location :: {:pls | :m3u, String.t}
+	@type playlist_location :: {:pls | :m3u, String.t}
 	@spec grab_stream(playlist_location, non_neg_integer) :: {:ok, String.t} | failure | {:error, :no_stream}
 	defp grab_stream({tpe, path}, timeout) do
 
@@ -62,7 +62,7 @@ defmodule Radio do
 	    iex>   "Radio One" => {:pls, "http://radio.com/listen.pls"},
 	    iex>   "Radio Two" => {:m3u, "/home/me/Documents/radio.m3u"}
 	    iex> }, 2000)
-	    "[playlist]\nNumberOfEntries=2\nVersion=2\n[...]"
+	    "[playlist]\\nNumberOfEntries=2\\nVersion=2\\n[...]"
 
 	"""
 	@spec generate(%{String.t => playlist_location}, non_neg_integer) :: String.t

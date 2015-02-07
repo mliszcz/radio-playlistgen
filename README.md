@@ -6,7 +6,7 @@ radio-playlistgen
 # Overview
 
 This application parses *pls*/*m3u* playlists with radio stations live streams,
-filters unreachable and combines available streams into one *pls* playlist
+filters unreachable and combines available sources into one *pls* playlist
 with proper metadata.
 
 #Example
