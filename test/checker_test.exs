@@ -3,32 +3,13 @@ defmodule CheckerTest do
 
 	use ExUnit.Case
 
-	defp serve(what, port) do
-		me = self
-		ref = make_ref
-		Task.async fn ->
-			{:ok, ss} = :gen_tcp.listen(port, [])
-			send me, {:ok, ref}
-			{:ok, s} = :gen_tcp.accept(ss)
-			:gen_tcp.recv(s, 0)
-			:gen_tcp.send(s, what)
-			:gen_tcp.close(s)
-			:gen_tcp.close(ss)
-		end
-		receive do
-			{:ok, ^ref} -> :ok
-		end
-	end
-
-	# TODO run mocked servers on localhost
-
 	test "check IceCast stream" do
-		serve("HTTP/1.0 200 OK\r\nContent-Length: 0\r\n\r\n", 8123)
+		HTTPServer.serve_once("HTTP/1.0 200 OK\r\nContent-Length: 0\r\n\r\n", 8123)
 		assert Checker.check("http://localhost:8123", 2000) == true
 	end
 
 	test "check SHOUTcast stream" do
-		serve("ICY 200 OK\r\nContent-Length: 0\r\n\r\n", 8124)
+		HTTPServer.serve_once("ICY 200 OK\r\nContent-Length: 0\r\n\r\n", 8124)
 		assert Checker.check("http://localhost:8124", 2000) == true
 	end
 
