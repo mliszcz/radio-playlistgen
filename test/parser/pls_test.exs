@@ -13,7 +13,7 @@ defmodule Parser.PLSTest do
 		Title2=t2
 		File2=f2
 		Length2=l2
-		""", [:utf8]
+		"""
 
 		assert Parser.PLS.parse(file) == ["f2", "f1"]
 
@@ -25,7 +25,7 @@ defmodule Parser.PLSTest do
 		some dummy data
 		which is not in
 		pls file format
-		""", [:utf8]
+		"""
 
 		assert Parser.PLS.parse(file) == []
 
@@ -33,7 +33,7 @@ defmodule Parser.PLSTest do
 	end
 
 	test "parse empty file" do
-		{:ok, file} = StringIO.open "", [:utf8]
+		{:ok, file} = StringIO.open ""
 		assert Parser.PLS.parse(file) == []
 		StringIO.close(file)
 	end

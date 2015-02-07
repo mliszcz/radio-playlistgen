@@ -12,7 +12,7 @@ defmodule Parser.M3UTest do
 
 		#EXTINF:m2
 		f2
-		""", [:utf8]
+		"""
 
 		assert Parser.M3U.parse(file) == ["f2", "f1"]
 
@@ -20,7 +20,7 @@ defmodule Parser.M3UTest do
 	end
 
 	test "parse empty file" do
-		{:ok, file} = StringIO.open "", [:utf8]
+		{:ok, file} = StringIO.open ""
 		assert Parser.M3U.parse(file) == []
 		StringIO.close(file)
 	end

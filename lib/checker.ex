@@ -3,6 +3,7 @@ defmodule Checker do
 
 	@infty 999999999
 
+	@spec check(char_list, non_neg_integer) :: boolean
 	def check(url, timeout) when is_list(url) and is_integer(timeout) do
 
 		task = Task.async fn ->
@@ -32,6 +33,7 @@ defmodule Checker do
 		Task.await task, @infty
 	end
 
+	@spec check(String.t, non_neg_integer) :: boolean
 	def check(url, timeout) when is_binary(url) do
 		check to_char_list(url), timeout
 	end

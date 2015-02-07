@@ -6,7 +6,7 @@ defmodule Radio.Mixfile do
 		version: "0.0.1",
 		elixir: "~> 1.0",
 		deps: deps,
-		test_coverage: [tool: ExCoveralls]]
+		test_coverage: [tool: ExCoveralls] ]
 	end
 
 	def application do [
@@ -14,7 +14,8 @@ defmodule Radio.Mixfile do
 		env: [playlists: %{}, timeout: 2000] ]
 	end
 
-	defp deps do
-		[{:excoveralls, "~> 0.3", only: :dev}]
+	defp deps do [
+			{:excoveralls, "~> 0.3", only: :dev},
+			{:dialyze, "~> 0.1", only: :dev} ]
 	end
 end

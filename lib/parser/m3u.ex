@@ -1,10 +1,12 @@
 
 defmodule Parser.M3U do
 
+	@spec parse(pid) :: [String.t]
 	def parse(file) do
 		parseLine file, []
 	end
 
+	@spec parseLine(pid, [String.t]) :: [String.t]
 	defp parseLine(file, data) do
 		case IO.read file, :line do
 			:eof -> data

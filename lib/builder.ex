@@ -2,6 +2,9 @@
 defmodule Builder do
 	import Enum
 
+	@typep playlist_entry :: %{title: String.t, file: String.t}
+
+	@spec build([playlist_entry]) :: String.t
 	def build(entries) do
 		ent = entries
 			|> with_index
@@ -15,6 +18,7 @@ defmodule Builder do
 		"""
 	end
 
+	@spec format({playlist_entry, pos_integer}) :: String.t
 	defp format({%{title: t, file: f}, id}) do
 		~s"""
 		File#{id}=#{f}
